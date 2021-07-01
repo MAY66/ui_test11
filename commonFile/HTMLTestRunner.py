@@ -17,7 +17,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-HTML_DIR = os.path.join(BASE_DIR, "html")
+HTML_DIR = os.path.join(BASE_DIR, "../HTMLTestRunner-master/html")
 INIT_FILE = os.path.join(BASE_DIR, "__init__.py")
 
 # ---------------------------
