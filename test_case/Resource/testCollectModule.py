@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-
+#收藏模板case
 class TestDemo(unittest.TestCase):
     def setUp(self):
         # 登录Hzero
@@ -23,53 +23,50 @@ class TestDemo(unittest.TestCase):
         # self.browser.find_element_by_xpath('//*[@id="root"]/div/div[1]/div[2]/div[2]/div[3]/div/span/span[1]/svg').click()
         self.browser.find_element_by_css_selector(
             '#root > div > div.-layouts-header_header > div.-layouts-header_content > div.-layouts-header_actions > div:nth-child(3) > div > span > span.anticon.anticon-user > svg').click()
+
         sleep(10)
         WebDriverWait(self.browser, 10, 0.3).until(ec.presence_of_element_located((By.ID, "username"))).send_keys(
             "31199")
         WebDriverWait(self.browser, 10, 0.3).until(ec.presence_of_element_located((By.ID, "password"))).send_keys(
             "Zm402402")
         WebDriverWait(self.browser, 10, 0.3).until(ec.element_to_be_clickable((By.XPATH,
-            '//*[@id="root"]/div/div[2]/section/main/div/div/div/div/form/div[3]/div/div/div/button'))).click()
+                '//*[@id="root"]/div/div[2]/section/main/div/div/div/div/form/div[3]/div/div/div/button'))).click()
 
-    def test_search_resource(self):
+    def test_add_resource_to_project(self):
         try:
-            sleep(10)
-            # 点击资源按钮
-            element1 = self.browser.find_element_by_xpath(
-                '//*[@id="root"]/div/div[2]/section/aside/div/div/ul/li[3]/a/img')
-            self.browser.execute_script("arguments[0].click();", element1)
-            sleep(10)
-            #点击“本地导入”按钮
+            #点击资源按钮
             self.browser.find_element_by_xpath(
-                '//*[@id="root"]/div/div[2]/section/main/div[1]/div/button[1]/span').click()
-            sleep(10)
-            #点击“添加文件”按钮
-            self.browser.find_element_by_xpath(
-                '/html/body/div[3]/div/div[2]/div/div[2]/div[2]/div/div[2]/div/span[3]').click()
-            #选择文件
-            sleep(10)
-            #点击”取消“按钮
-            self.browser.find_element_by_xpath(
-                '/html/body/div[3]/div/div[2]/div/div[2]/div[3]/button[1]/span').click()
-            sleep(10)
-            #点击“确定”按钮
-            self.browser.find_element_by_xpath(
-                '//*[@id="root"]/div/div[2]/section/main/div[1]/div/button[1]/span').click()
+                '//*[@id="root"]/div/div[2]/section/aside/div/div/ul/li[3]/a/img').click()
+
+            # 收藏”报销单详情“模板
             sleep(10)
             self.browser.find_element_by_xpath(
-                '/html/body/div[3]/div/div[2]/div/div[2]/div[2]/div/div[2]/div/span[3]').click()
+                '//*[@id="block-list-view"]/div/div/div/div[1]/div[3]/div[1]/div[3]/div[1]/span[2]/span/img').click()
+            # 添加断言
+            element_collect_template = self.browser.find_element_by_xpath(
+                '//*[@id="block-list-view"]/div/div/div/div[1]/div[3]/div[1]/div[3]/div[1]/span[2]/span/img').text
+            self.assertEqual(element_collect_template, "收藏成功")
+
+            # 取消收藏”报销单详情“模块
             sleep(10)
             self.browser.find_element_by_xpath(
-                '/html/body/div[3]/div/div[2]/div/div[2]/div[3]/button[2]').click()
+                '//*[@id="block-list-view"]/div/div/div/div[1]/div[4]/div[1]/div[3]/div[1]/span[2]/span/img').click()
+            # 添加断言
+            element_discollect_template = self.browser.find_element_by_xpath(
+                '//*[@id="block-list-view"]/div/div/div/div[1]/div[3]/div[1]/div[3]/div[1]/span[2]/span/img').text
+            self.assertEqual(element_discollect_template, "取消收藏成功")
 
         except Exception as e:
             get_picture(self.browser)
             raise e
 
     def tearDown(self):
-        self.browser.find_element_by_css_selector(
-            '#root > div > div.-layouts-header_header > div.-layouts-header_content > div.-layouts-header_actions > div:nth-child(3) > div > span > span.anticon.anticon-user > svg').click()
-        self.browser.find_element_by_xpath(
-            '/html/body/div[3]/div/div/div/div[2]/div[2]').click()
+        # 退出虹珊瑚登录
+        WebDriverWait(self.browser, 10, 0.3).until(ec.element_to_be_clickable((By.XPATH,
+            '//*[@id="root"]/div/div[1]/div[2]/div[2]/div[3]/div/div'))).click()
+
+        WebDriverWait(self.browser, 10, 0.3).until(ec.element_to_be_clickable((By.CSS_SELECTOR,
+             'body > div:nth-child(8) > div > div > div > div:nth-child(2) > div.-layouts-header_icon-wrapper > img'))).click()
+        # 关闭浏览器
         self.browser.quit()
 

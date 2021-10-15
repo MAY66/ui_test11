@@ -1,14 +1,14 @@
 import unittest
 from time import sleep
+from selenium import webdriver
 from commonFile.getPicture import get_picture
 from commonFile.commonlogin import user_login
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-#搜索资源模板名称case
+#将资源模板添加到项目case
 class TestDemo(unittest.TestCase):
-
     def setUp(self):
         # 登录Hzero
         self.browser = user_login('http://localhost:8000/', 'admin', 'Admin@123!')
@@ -32,38 +32,33 @@ class TestDemo(unittest.TestCase):
         WebDriverWait(self.browser, 10, 0.3).until(ec.element_to_be_clickable((By.XPATH,
                 '//*[@id="root"]/div/div[2]/section/main/div/div/div/div/form/div[3]/div/div/div/button'))).click()
 
-
-    def test_search_resource(self):
+    def test_add_resource_to_project(self):
         try:
-            sleep(5)
-            # 点击资源按钮
-            element1 = self.browser.find_element_by_xpath(
-                '//*[@id="root"]/div/div[2]/section/aside/div/div/ul/li[3]/a/img')
-            self.browser.execute_script("arguments[0].click();", element1)
-
+            #点击资源按钮
+            self.browser.find_element_by_xpath(
+                '//*[@id="root"]/div/div[2]/section/aside/div/div/ul/li[3]/a/img').click()
             # 在搜索框输入全部查询名称
-            WebDriverWait(self.browser, 10, 0.3).until(ec.presence_of_element_located((By.XPATH,
-                        '//*[@id="root"]/div/div[2]/section/main/div[1]/div/span/input'))).send_keys(
-                "会议室资源查询")
-            # 添加断言
-            resourcename_tips_tup = (By.XPATH,
-                                     '//*[@id="block-list-view"]/div[1]/div/div/div/div[2]/div[1]/div[3]/div[1]/span[1]')
-            tips_info = WebDriverWait(self.browser, 10).until(ec.presence_of_element_located(resourcename_tips_tup)).text
-            self.assertEqual(tips_info, "会议室资源查询")
+            # sleep(5)
+            # self.browser.find_element_by_xpath(
+            #     '//*[@id="root"]/div/div[2]/section/main/div[1]/div/span/input').send_keys('会议室资源查询')
 
-            # 清除查询框中的内容
+            # 将”会议室资源查询“模板添加到项目中
+            # 点击“添加到项目”按钮
+            WebDriverWait(self.browser, 30, 0.3).until(ec.element_to_be_clickable((By.XPATH,
+                    '//*[@id="block-list-view"]/div[1]/div/div/div/div[2]/div[1]/div[1]/div/div/div[1]/button'))).click()
+            # 将模板添加到项目中---校验”取消“功能是否可用
             WebDriverWait(self.browser, 10, 0.3).until(ec.element_to_be_clickable((By.XPATH,
-                        '//*[@id="root"]/div/div[2]/section/main/div[1]/div/span/span[2]'))).click()
+                    '/html/body/div[4]/div/div[2]/div/div[2]/div[3]/button[1]/span'))).click()
 
-            # 在搜索框输入部分查询名称
-            WebDriverWait(self.browser, 10, 0.3).until(ec.presence_of_element_located((By.XPATH,
-                        '//*[@id="root"]/div/div[2]/section/main/div[1]/div/span/input'))).send_keys("资源")
-            # 添加断言
-            resourcename_tips_tup2 = (By.XPATH,
-                                     '//*[@id="block-list-view"]/div[1]/div/div/div/div[2]/div[1]/div[3]/div[1]/span[1]')
-            tips_info2 = WebDriverWait(self.browser, 10).until(
-                ec.presence_of_element_located(resourcename_tips_tup2)).text
-            self.assertEqual(tips_info2, "会议室资源查询")
+            # 将模板添加到项目中---校验”确定“功能是否可用
+            WebDriverWait(self.browser, 10, 0.3).until(ec.element_to_be_clickable((By.XPATH,
+                     '/html/body/div[4]/div/div[2]/div/div[2]/div[3]/button[2]/span'))).click()
+
+            self.browser.switch_to_default_content()
+
+            title_tup = (By.XPATH,'//*[@id="root"]/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div[1]/span')
+            title_info = WebDriverWait(self.browser, 10).until(ec.presence_of_element_located(title_tup)).text
+            self.assertEqual(title_info, "日常费用报销: 查看费用报销单详情")
 
         except Exception as e:
             get_picture(self.browser)
@@ -72,7 +67,7 @@ class TestDemo(unittest.TestCase):
     def tearDown(self):
         # 退出虹珊瑚登录
         WebDriverWait(self.browser, 10, 0.3).until(ec.element_to_be_clickable((By.XPATH,
-             '//*[@id="root"]/div/div[1]/div[2]/div[2]/div[3]/div/div'))).click()
+            '//*[@id="root"]/div/div[1]/div[2]/div[2]/div[3]/div/div'))).click()
 
         WebDriverWait(self.browser, 10, 0.3).until(ec.element_to_be_clickable((By.CSS_SELECTOR,
             'body > div:nth-child(8) > div > div > div > div:nth-child(2) > div.-layouts-header_icon-wrapper > img'))).click()
